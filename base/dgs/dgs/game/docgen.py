@@ -33,7 +33,7 @@ def __generate_config_docs(config_classes: typing.List[ConfigClass]):
   return docs
 
 def generate_docs(game_name: str, config_classes: typing.List[ConfigClass] = list()) -> str:
-  docs = f"# {game_name} Server Configuration\n"
+  docs = f"# {game_name} Configuration\n"
 
   docs += __generate_config_docs(config_classes)
 

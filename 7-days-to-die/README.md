@@ -1,4 +1,4 @@
-# 7 Days To Die Server Server Configuration
+# 7 Days To Die Server Configuration
 ## Configuration
 ### Environment Variables
 | Environment Variable | Config Option | Type | Description | Default |
