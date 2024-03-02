@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+
+import subprocess
+import sys
+
 from xml.dom import minidom
 from dgs.game.config import Config, String, Integer, Boolean
 
@@ -147,4 +151,13 @@ class SevenDaysToDieConfig(Config):
     return root.toprettyxml(indent="  ")
 
 game_config = SevenDaysToDieConfig()
-print(game_config.render())
+rendered_config = game_config.render()
+
+with open("serverconfig.xml", "w") as f:
+  f.write(rendered_config)
+
+
+subprocess.run(["bash", "-c", "startserver.sh", "-configfile=serverconfig.xml"],
+               stdout=sys.stdout,
+               stderr=sys.stderr,
+               )
