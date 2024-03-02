@@ -15,23 +15,6 @@ class ConfigClass:
   path: str
   class_name: str
 
-def __generate_config_docs(config_classes: typing.List[ConfigClass]):
-  docs = "## Configuration\n"
-  docs += "### Environment Variables\n"
-  docs += "| Environment Variable | Config Option | Type | Description | Default |\n"
-  docs += "| --- | --- | --- | --- | --- |\n"
-
-  for config_class in config_classes:
-    module = dynamic_import(config_class.module_name, config_class.path)
-
-    cfgcls = getattr(module, config_class.class_name)
-
-    inst = cfgcls()
-
-    for var_doc in inst.variable_docs():
-      docs += f"| {var_doc.env_var} | {var_doc.config_option} | {var_doc.type_name} | {var_doc.description} | {var_doc.default} |\n"
-  return docs
-
 @dataclass
 class DockerInfo:
   image: str
@@ -44,7 +27,25 @@ class Info:
   config_classes: typing.List[ConfigClass]
 
 
-def generate_docs(info: Info) -> str:
+def __generate_config_docs(path: str, info: Info) -> str:
+  docs = "## Configuration\n"
+  docs += "### Environment Variables\n"
+  docs += "| Environment Variable | Config Option | Type | Description | Default |\n"
+  docs += "| --- | --- | --- | --- | --- |\n"
+
+  for config_class in info.config_classes:
+    module = dynamic_import(config_class.module_name, path + "/"+config_class.path)
+
+    cfgcls = getattr(module, config_class.class_name)
+
+    inst = cfgcls()
+
+    for var_doc in inst.variable_docs():
+      docs += f"| {var_doc.env_var} | {var_doc.config_option} | {var_doc.type_name} | {var_doc.description} | {var_doc.default} |\n"
+  return docs
+
+
+def generate_docs(path: str, info: Info) -> str:
   docs = f"# {info.name} Configuration\n"
 
   docs += "## Building\n"
@@ -58,6 +59,6 @@ def generate_docs(info: Info) -> str:
   docs += f"docker build -t {info.docker.image}:{info.docker.tag} .\n"
   docs += "```\n"
 
-  docs += __generate_config_docs(info.config_classes)
+  docs += __generate_config_docs(path, info)
 
   return docs

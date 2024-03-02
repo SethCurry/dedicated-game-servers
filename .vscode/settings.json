@@ -1,0 +1,4 @@
+{
+  "python.autoComplete.extraPaths": ["base/dgs/dgs"],
+  "python.analysis.extraPaths": ["base/dgs/dgs"]
+}

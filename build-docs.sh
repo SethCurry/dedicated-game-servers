@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PYTHONPATH="$PYTHONPATH:$(pwd)/base/dgs"
+
 for dir in ./*; do
   if [ ! -d $dir ]; then
     continue

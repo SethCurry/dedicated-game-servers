@@ -1,8 +1,7 @@
-from dgs.game.docgen import ConfigClass, generate_docs
+from dgs.game.docgen import ConfigClass, generate_docs, Info, DockerInfo
 
-with open("README.md", "w") as f:
-  docs = generate_docs("7 Days To Die Server", [
+info = Info("7 Days to Die", config_classes=[
     ConfigClass("start", "docker/start.py", "SevenDaysToDieConfig"),
-  ])
-
-  f.write(docs)
+  ],
+  docker=DockerInfo("dgs.scurry.io/7-days-to-die", "latest"),
+)
