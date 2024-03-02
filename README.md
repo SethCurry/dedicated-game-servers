@@ -8,3 +8,4 @@ them yourself.
 ## Games
 
 - [7 Days to Die](7-days-to-die/README.md)
+- [Valheim](valheim/README.md)
