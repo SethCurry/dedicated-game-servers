@@ -35,6 +35,24 @@ def __generate_config_docs(config_classes: typing.List[ConfigClass]):
 def generate_docs(game_name: str, config_classes: typing.List[ConfigClass] = list()) -> str:
   docs = f"# {game_name} Configuration\n"
 
+  docs += "## Building\n"
+
+  docs += "First, you will need to build the base Docker image.  See the [README](../base/README.md) for instructions on how to do this.\n"
+  docs += "\n"
+  docs += "\n"
+  docs += "Once you have done that, you can build the game server image with this command:\n"
+  docs += "\n"
+  docs += "```bash\n"
+
+  with open("docker/build.sh") as f:
+    for line in f.readlines():
+      if line == "#!/bin/bash\n" or line == "\n":
+        continue
+      docs += line
+  if not docs.endswith("\n"):
+    docs += "\n"
+  docs += "```\n"
+
   docs += __generate_config_docs(config_classes)
 
   return docs
