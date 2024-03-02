@@ -3,7 +3,7 @@ import typing
 
 from dataclasses import dataclass
 
-def __dynamic_import(module_name: str, path: str):
+def dynamic_import(module_name: str, path: str):
   spec = importlib.util.spec_from_file_location(module_name, path)
   module = importlib.util.module_from_spec(spec)
   spec.loader.exec_module(module)
@@ -22,7 +22,7 @@ def __generate_config_docs(config_classes: typing.List[ConfigClass]):
   docs += "| --- | --- | --- | --- | --- |\n"
 
   for config_class in config_classes:
-    module = __dynamic_import(config_class.module_name, config_class.path)
+    module = dynamic_import(config_class.module_name, config_class.path)
 
     cfgcls = getattr(module, config_class.class_name)
 
@@ -32,8 +32,20 @@ def __generate_config_docs(config_classes: typing.List[ConfigClass]):
       docs += f"| {var_doc.env_var} | {var_doc.config_option} | {var_doc.type_name} | {var_doc.description} | {var_doc.default} |\n"
   return docs
 
-def generate_docs(game_name: str, config_classes: typing.List[ConfigClass] = list()) -> str:
-  docs = f"# {game_name} Configuration\n"
+@dataclass
+class DockerInfo:
+  image: str
+  tag: str
+
+@dataclass
+class Info:
+  name: str
+  docker: DockerInfo
+  config_classes: typing.List[ConfigClass]
+
+
+def generate_docs(info: Info) -> str:
+  docs = f"# {info.name} Configuration\n"
 
   docs += "## Building\n"
 
@@ -43,16 +55,9 @@ def generate_docs(game_name: str, config_classes: typing.List[ConfigClass] = lis
   docs += "Once you have done that, you can build the game server image with this command:\n"
   docs += "\n"
   docs += "```bash\n"
-
-  with open("docker/build.sh") as f:
-    for line in f.readlines():
-      if line == "#!/bin/bash\n" or line == "\n":
-        continue
-      docs += line
-  if not docs.endswith("\n"):
-    docs += "\n"
+  docs += f"docker build -t {info.docker.image}:{info.docker.tag} .\n"
   docs += "```\n"
 
-  docs += __generate_config_docs(config_classes)
+  docs += __generate_config_docs(info.config_classes)
 
   return docs
